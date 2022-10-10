@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Lucas Anderson Ladislau Aguiar on 07/10/2022.
@@ -87,6 +88,31 @@ public class SacolaServiceImpl implements SacolaService {
 
         sacola.setFormaPagamento(formaPagamento);
         sacola.setFechada(true);
+        return sacolaRepository.save(sacola);
+    }
+
+    @Override
+    public Sacola excluirItemSacola(Long idItem, Long idSacola) {
+        Sacola sacola = verSacola(idItem);
+        boolean isItemSacola = false;
+        Item itemParaRemover = null;
+        List<Item> itensSacola = sacola.getItens();
+        for (Item item : itensSacola) {
+            isItemSacola = Objects.equals(item.getId(), idItem);
+            System.out.println(Objects.equals(item.getId(), idItem));
+            if (isItemSacola) {
+                itemParaRemover = item;
+                break;
+            }
+        }
+        if (!isItemSacola) {
+            throw new RuntimeException("O item não está na sacola");
+        } else if (sacola.isFechada()) {
+            throw new RuntimeException("A sacola está fechada");
+        }else{
+            itensSacola.remove(itemParaRemover);
+            sacola.setValorTotal(sacola.getValorTotal() - (itemParaRemover.getProduto().getValorUnitario()*itemParaRemover.getQuantidade()));
+        }
         return sacolaRepository.save(sacola);
     }
 }

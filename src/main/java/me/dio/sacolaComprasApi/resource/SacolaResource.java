@@ -35,4 +35,10 @@ public class SacolaResource {
         return sacolaService.fecharSacola(sacolaId,formPagamento);
     }
 
+    @DeleteMapping("/excluirItem/{idSacola}")
+    public Sacola excluirItemSacola(@PathVariable("idSacola") Long idSacola, @RequestParam("id") Long idItem){
+        //Excluir um item da sacola pelo id do Item
+        return sacolaService.excluirItemSacola(idItem, idSacola);
+    }
+
 }
